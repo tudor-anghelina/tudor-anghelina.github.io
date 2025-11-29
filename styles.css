@@ -1,0 +1,183 @@
+/* GLOBAL */
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    background: #0c0c0c;
+    color: #fff;
+    scroll-behavior: smooth;
+}
+
+h1, h2 {
+    font-family: 'Playfair Display', serif;
+}
+
+/* NAVIGATION */
+.floating-nav {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(12, 12, 12, 0.6);
+    backdrop-filter: blur(12px);
+    padding: 12px 35px;
+    border-radius: 40px;
+    z-index: 1000;
+    display: flex;
+    gap: 30px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.floating-nav a {
+    color: #fff;
+    font-size: 0.9em;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.8;
+    transition: 0.3s ease;
+}
+
+.floating-nav a:hover {
+    opacity: 1;
+    color: #C8A45D;
+}
+
+/* HERO */
+#hero {
+    height: 100vh;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Background image */
+#hero::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url("https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgyFGyXzzz7VQrEfxPFR9OiisSfD2UXSOJlYz5jeEmwIwCX7E1Wb8g_XwlJxeyzKVuLFcMgMjKJQ_n4wyURjRItDPmBc1OeHbwbxT2l1X79REgjbN7FHe0Wgx30dOk3mtQMo4dQpK1u-odVvVkEAxfUYoQCyoZ4wYR9aA-oTlWwJ1NhdgSk8G_FVuidHdw/s16000/Tudor%20Anghelina.jpg");
+    background-size: cover;
+    background-position: center;
+    filter: blur(3px) brightness(0.45);
+    transform: scale(1.1);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.hero-title {
+    color: #C8A45D;
+    font-size: 5em;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.6);
+}
+
+.hero-tagline {
+    margin-top: 20px;
+    font-size: 1.3em;
+    opacity: 0.8;
+}
+
+/* SECTIONS */
+section {
+    padding: 120px 20px;
+    max-width: 1100px;
+    margin: auto;
+    text-align: center;
+}
+
+section h2 {
+    font-size: 3em;
+    margin-bottom: 50px;
+    color: #C8A45D;
+}
+
+/* MUSIC LIST */
+.music-list {
+    list-style: none;
+    padding: 0;
+    max-width: 600px;
+    margin: auto;
+}
+
+.music-list li {
+    padding: 20px;
+    margin-bottom: 15px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+    font-size: 1.1em;
+    transition: 0.3s;
+}
+
+.music-list li:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: #C8A45D;
+    transform: translateY(-3px);
+}
+
+/* GALLERY */
+.masonry {
+    column-count: 3;
+    column-gap: 20px;
+}
+
+.masonry img {
+    width: 100%;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    transition: 0.3s;
+    filter: grayscale(40%);
+}
+
+.masonry img:hover {
+    transform: scale(1.03);
+    filter: grayscale(0%);
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .masonry { column-count: 2; }
+}
+
+@media (max-width: 600px) {
+    .masonry { column-count: 1; }
+    .hero-title { font-size: 3em; }
+}
+
+/* CONTACT */
+.contact-info {
+    font-size: 1.2em;
+    opacity: 0.8;
+}
+
+.social-links {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+}
+
+.social-links a {
+    padding: 10px 25px;
+    border-radius: 30px;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: 0.3s;
+}
+
+.social-links a:hover {
+    background: #C8A45D;
+    color: #000;
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    padding: 50px 0;
+    opacity:
