@@ -188,10 +188,12 @@ img {
 .hero {
   height: 100vh;
   display: flex;
-  align-items: center;
+  /* move content higher on the page */
+  align-items: flex-start;
   justify-content: center;
   text-align: center;
-  padding: 40px;
+  /* slightly higher than center but not too close to top */
+  padding: 60px 40px 40px;
   position: relative;
   overflow: hidden;
 }
@@ -332,6 +334,7 @@ img {
   margin-bottom: 10px;
   position: relative;
   display: inline-block;
+  color: #fff; /* ensure 'TUDOR' is white */
 }
 
 .title::after {
@@ -340,9 +343,12 @@ img {
   bottom: -10px;
   left: 50%;
   transform: translateX(-50%);
-  width: 100px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, #c9a86a, transparent);
+  width: 160px;
+  height: 2px;
+  /* animated gradient from white to gold (subtle, slow) */
+  background: linear-gradient(90deg, #ffffff 0%, #C9A86A 100%);
+  background-size: 200% 100%;
+  animation: gradientShift 7s ease-in-out infinite alternate;
 }
 
 .title-highlight {
@@ -351,21 +357,14 @@ img {
   display: inline-block;
 }
 
-.title-highlight::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, #c9a86a, #f1ddaa, #c9a86a);
-  transform: scaleX(0);
-  transform-origin: center;
-  animation: highlightExpand 2s ease forwards 1.5s;
-}
-
 @keyframes highlightExpand {
   to { transform: scaleX(1); }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .subtitle {
