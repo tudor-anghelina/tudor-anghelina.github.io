@@ -33,11 +33,11 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <!-- Favicon -->
-  <link rel="icon" href="img/favicon.ico" sizes="any">
-  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+  <!-- Favicon (will be cache-busted at runtime) -->
+  <link rel="icon" data-href="img/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" data-href="img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" data-href="img/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" data-href="img/apple-touch-icon.png">
   <link id="site-manifest" rel="manifest" data-href="site.webmanifest">
   
   <!-- Styles (cache-busted at runtime) -->
@@ -48,16 +48,43 @@
     (function(){
       try {
         const v = Date.now();
-        // Stylesheet
-        const cssLink = document.getElementById('main-css');
-        if (cssLink && cssLink.dataset && cssLink.dataset.href) {
-          cssLink.href = cssLink.dataset.href + '?v=' + v;
+
+        // Set all elements with data-href -> href (links, icons, manifest, etc.)
+        document.querySelectorAll('[data-href]').forEach(el => {
+          try {
+            const base = el.dataset.href;
+            if (!base) return;
+            // ensure we only rewrite local assets (relative or /img/)
+            el.href = base + '?v=' + v;
+          } catch (e) {
+            // ignore individual errors
+          }
+        });
+
+        // Set all elements with data-src -> src (images)
+        document.querySelectorAll('[data-src]').forEach(el => {
+          try {
+            const base = el.dataset.src;
+            if (!base) return;
+            el.src = base + '?v=' + v;
+          } catch (e) {}
+        });
+
+        // Update meta og:image if it points to a local asset
+        const ogImage = document.querySelector('meta[property="og:image"]');
+        if (ogImage && ogImage.content && (ogImage.content.indexOf('img/') === 0 || ogImage.content.indexOf('/img/') === 0)) {
+          ogImage.content = ogImage.content + '?v=' + v;
         }
-        // Manifest
-        const manifestLink = document.getElementById('site-manifest');
-        if (manifestLink && manifestLink.dataset && manifestLink.dataset.href) {
-          manifestLink.href = manifestLink.dataset.href + '?v=' + v;
-        }
+
+        // Optional: any element with data-bg -> set background-image with cache-busted URL
+        document.querySelectorAll('[data-bg]').forEach(el => {
+          try {
+            const base = el.dataset.bg;
+            if (!base) return;
+            el.style.backgroundImage = `url('${base}?v=${v}')`;
+          } catch (e) {}
+        });
+
       } catch (e) {
         console.error('Cache-bust loader error', e);
       }
@@ -76,7 +103,7 @@
   <header class="site-header">
     <div class="nav-wrap">
       <a class="brand" href="#home" aria-label="Tudor Anghelina home">
-        <img src="img/aristopathsLogo.png" alt="Aristopaths logo" width="36" height="36">
+        <img data-src="img/aristopathsLogo.png" alt="Aristopaths logo" width="36" height="36">
       </a>
 
       <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle menu">
@@ -322,7 +349,7 @@
   <footer class="footer">
     <div class="footer-content">
       <div class="footer-brand">
-        <img src="img/aristopathsLogo.png" alt="Aristopaths logo" width="40" height="40">
+        <img data-src="img/aristopathsLogo.png" alt="Aristopaths logo" width="40" height="40">
         <span>Tudor Anghelina</span>
       </div>
       
