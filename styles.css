@@ -201,10 +201,10 @@ img {
   inset: -12%;
   background-size: cover;
   background-position: center center;
-  filter: blur(24px);
-  transform: scale(1.04);
+  filter: blur(18px);
+  transform: scale(1.03);
   opacity: 0;
-  transition: opacity 1.6s ease, transform 6s ease;
+  transition: opacity 2.2s ease, transform 8s ease;
   z-index: 0;
 }
 

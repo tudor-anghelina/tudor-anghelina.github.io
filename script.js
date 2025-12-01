@@ -85,8 +85,8 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // Prime the second layer then begin rotation
-    setTimeout(() => rotateHeroBg(), 200);
-    setInterval(rotateHeroBg, 7000);
+    setTimeout(() => rotateHeroBg(), 400);
+    setInterval(rotateHeroBg, 9000);
   }
   
   // Contact Form Submission
