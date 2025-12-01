@@ -47,30 +47,14 @@ body {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 0;
   text-decoration: none;
-  color: #fff;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  font-size: 0.9em;
-  font-weight: 500;
 }
 
-.brand-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
+.brand img {
+  display: block;
   height: 36px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #d8b76d, #a87d2b);
-  color: #111;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
-
-.brand-name {
-  color: #c9a86a;
+  width: auto;
 }
 
 .nav-links {
