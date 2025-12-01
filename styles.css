@@ -189,9 +189,9 @@ img {
   height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   text-align: center;
-  padding: 140px 40px 80px;
+  padding: 40px;
   position: relative;
   overflow: hidden;
 }
@@ -1060,10 +1060,6 @@ img {
     padding: 15px 0;
   }
   
-  .hero {
-    padding: 120px 24px 70px;
-  }
-  
   .section {
     margin: 80px auto;
   }
@@ -1101,10 +1097,6 @@ img {
   
   .subtitle {
     font-size: 1em;
-  }
-  
-  .hero {
-    padding: 100px 18px 60px;
   }
   
   .section-title {
