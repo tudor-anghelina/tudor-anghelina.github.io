@@ -28,16 +28,41 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Tudor Anghelina">
+  <!-- Prevent aggressive HTML caching where possible -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   
   <!-- Favicon -->
   <link rel="icon" href="img/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
-  <link rel="manifest" href="site.webmanifest">
+  <link id="site-manifest" rel="manifest" data-href="site.webmanifest">
   
-  <!-- Styles -->
-  <link rel="stylesheet" href="styles.css" />
+  <!-- Styles (cache-busted at runtime) -->
+  <link id="main-css" rel="stylesheet" data-href="styles.css">
+
+  <!-- Cache-busting loader: sets href/src with a version query param to force reloads -->
+  <script>
+    (function(){
+      try {
+        const v = Date.now();
+        // Stylesheet
+        const cssLink = document.getElementById('main-css');
+        if (cssLink && cssLink.dataset && cssLink.dataset.href) {
+          cssLink.href = cssLink.dataset.href + '?v=' + v;
+        }
+        // Manifest
+        const manifestLink = document.getElementById('site-manifest');
+        if (manifestLink && manifestLink.dataset && manifestLink.dataset.href) {
+          manifestLink.href = manifestLink.dataset.href + '?v=' + v;
+        }
+      } catch (e) {
+        console.error('Cache-bust loader error', e);
+      }
+    })();
+  </script>
   
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
@@ -314,6 +339,18 @@
     </div>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    (function(){
+      try {
+        var v = Date.now();
+        var s = document.createElement('script');
+        s.src = 'script.js?v=' + v;
+        s.defer = true;
+        document.body.appendChild(s);
+      } catch (e) {
+        console.error('Script loader error', e);
+      }
+    })();
+  </script>
 </body>
 </html>
