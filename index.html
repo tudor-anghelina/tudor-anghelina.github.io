@@ -49,41 +49,65 @@
       try {
         const v = Date.now();
 
-        // Set all elements with data-href -> href (links, icons, manifest, etc.)
+        // Immediately set critical assets (CSS & manifest) so they load fast
         document.querySelectorAll('[data-href]').forEach(el => {
           try {
             const base = el.dataset.href;
             if (!base) return;
-            // ensure we only rewrite local assets (relative or /img/)
-            el.href = base + '?v=' + v;
-          } catch (e) {
-            // ignore individual errors
-          }
-        });
-
-        // Set all elements with data-src -> src (images)
-        document.querySelectorAll('[data-src]').forEach(el => {
-          try {
-            const base = el.dataset.src;
-            if (!base) return;
-            el.src = base + '?v=' + v;
+            // Only set href for elements that are in the head (css/manifest/icons)
+            // We'll also set the rest on DOMContentLoaded to ensure body elements exist
+            if (el.parentElement && el.parentElement.tagName === 'HEAD') {
+              el.href = base + '?v=' + v;
+            }
           } catch (e) {}
         });
 
-        // Update meta og:image if it points to a local asset
-        const ogImage = document.querySelector('meta[property="og:image"]');
-        if (ogImage && ogImage.content && (ogImage.content.indexOf('img/') === 0 || ogImage.content.indexOf('/img/') === 0)) {
-          ogImage.content = ogImage.content + '?v=' + v;
+        // After DOM content loads, set remaining assets (images, icons in body, bg images)
+        function applyLateBust() {
+          try {
+            // data-href for any remaining links (icons in head/body)
+            document.querySelectorAll('[data-href]').forEach(el => {
+              try {
+                const base = el.dataset.href;
+                if (!base) return;
+                el.href = base + '?v=' + v;
+              } catch (e) {}
+            });
+
+            // data-src -> set src for images
+            document.querySelectorAll('[data-src]').forEach(el => {
+              try {
+                const base = el.dataset.src;
+                if (!base) return;
+                el.src = base + '?v=' + v;
+              } catch (e) {}
+            });
+
+            // Update meta og:image if it points to a local asset
+            const ogImage = document.querySelector('meta[property="og:image"]');
+            if (ogImage && ogImage.content && (ogImage.content.indexOf('img/') === 0 || ogImage.content.indexOf('/img/') === 0)) {
+              ogImage.content = ogImage.content + '?v=' + v;
+            }
+
+            // data-bg -> background images
+            document.querySelectorAll('[data-bg]').forEach(el => {
+              try {
+                const base = el.dataset.bg;
+                if (!base) return;
+                el.style.backgroundImage = `url('${base}?v=${v}')`;
+              } catch (e) {}
+            });
+
+          } catch (e) {
+            console.error('Late cache-bust error', e);
+          }
         }
 
-        // Optional: any element with data-bg -> set background-image with cache-busted URL
-        document.querySelectorAll('[data-bg]').forEach(el => {
-          try {
-            const base = el.dataset.bg;
-            if (!base) return;
-            el.style.backgroundImage = `url('${base}?v=${v}')`;
-          } catch (e) {}
-        });
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+          setTimeout(applyLateBust, 0);
+        } else {
+          document.addEventListener('DOMContentLoaded', applyLateBust);
+        }
 
       } catch (e) {
         console.error('Cache-bust loader error', e);
