@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1050 950" role="img" aria-labelledby="title desc">
+  <title id="title">ARISTOPATHS A logo</title>
+  <desc id="desc">Golden ARISTOPATHS A mark on transparent background</desc>
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f7e98e"/>
+      <stop offset="50%" stop-color="#d7c768"/>
+      <stop offset="100%" stop-color="#bfa84a"/>
+    </linearGradient>
+  </defs>
+  <path d="M100 0 L525 950 L950 0 Z M310 300 L525 780 L740 300 Z M250 0 A350 350 0 1 0 850 0 L250 0 Z"
+        fill="url(#goldGrad)" stroke="url(#goldGrad)" stroke-width="18"/>
+</svg>
