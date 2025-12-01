@@ -393,6 +393,25 @@
   <script>
     (function(){
       try {
+        // compute and set header height CSS variable so layout can reference the real value
+        function setHeaderHeightVar() {
+          try {
+            var header = document.querySelector('.site-header');
+            var h = header ? header.offsetHeight : 72;
+            document.documentElement.style.setProperty('--header-height', h + 'px');
+          } catch (e) {
+            // ignore
+          }
+        }
+
+        // set immediately and update on resize (debounced)
+        setHeaderHeightVar();
+        var rh;
+        window.addEventListener('resize', function(){
+          clearTimeout(rh);
+          rh = setTimeout(setHeaderHeightVar, 120);
+        });
+
         var v = Date.now();
         var s = document.createElement('script');
         s.src = 'script.js?v=' + v;
