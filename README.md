@@ -1,6 +1,6 @@
 # Tudor Anghelina Website
 
-A minimalist, responsive website for musician Tudor Anghelina.
+A minimalist website for Tudor Anghelina.
 
 ## Features
 

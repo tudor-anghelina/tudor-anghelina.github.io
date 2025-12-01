@@ -4,6 +4,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const navLinks = document.querySelectorAll(".nav-links a");
   const contactForm = document.getElementById("contactForm");
   const siteHeader = document.querySelector(".site-header");
+  const heroBg1 = document.querySelector(".hero-bg-1");
+  const heroBg2 = document.querySelector(".hero-bg-2");
+  const heroImages = [
+    "https://distrokid.imgix.net/http%3A%2F%2Fgather.fandalism.com%2F555699--F224D231-EC64-498B-8402AFCFEA1A82E7--1618073139418--Burn.png?fm=jpg&q=75&w=800&s=822e4e0c3979c775978b6b8de00194e9",
+    "https://distrokid.imgix.net/http%3A%2F%2Fgather.fandalism.com%2F555699--E4B8858A-8013-4B24-9D3C41B351573D38--1594626150467--tudoranghelinapianolullabies.jpg?fm=jpg&q=75&w=800&s=8f3a80d46378fb4578f976798d3cde9b",
+    "https://distrokid.imgix.net/http%3A%2F%2Fgather.fandalism.com%2F555699--BBEBF5FE-92EE-47FE-83E4DD7E764ED7BB--1579469033701--TudorAnghelina6.png?fm=jpg&q=75&w=800&s=dd9c61e3014ddb47041055974a7fa557",
+    "https://distrokid.imgix.net/http%3A%2F%2Fgather.fandalism.com%2F555699--38A2CEC1-528F-47E3-806ACD15D2A5CD92--1575044305380--Design1.png?fm=jpg&q=75&w=800&s=c0dc2ec3ad0d5d56d7892e3e806ba628"
+  ];
+  let heroIndex = 0;
+  let showingFirstBg = true;
   
   // Mobile Navigation Toggle
   if (navToggle) {
@@ -51,6 +61,33 @@ document.addEventListener("DOMContentLoaded", () => {
       siteHeader.classList.remove("scrolled");
     }
   });
+
+  // Hero background slideshow with crossfade + blur
+  if (heroBg1 && heroBg2 && heroImages.length) {
+    const setBg = (el, url) => {
+      el.style.backgroundImage = `url('${url}')`;
+    };
+
+    setBg(heroBg1, heroImages[heroIndex]);
+    heroBg1.classList.add("is-visible");
+
+    const rotateHeroBg = () => {
+      const nextIndex = (heroIndex + 1) % heroImages.length;
+      const incoming = showingFirstBg ? heroBg2 : heroBg1;
+      const outgoing = showingFirstBg ? heroBg1 : heroBg2;
+
+      setBg(incoming, heroImages[nextIndex]);
+      incoming.classList.add("is-visible");
+      outgoing.classList.remove("is-visible");
+
+      showingFirstBg = !showingFirstBg;
+      heroIndex = nextIndex;
+    };
+
+    // Prime the second layer then begin rotation
+    setTimeout(() => rotateHeroBg(), 200);
+    setInterval(rotateHeroBg, 7000);
+  }
   
   // Contact Form Submission
   if (contactForm) {
