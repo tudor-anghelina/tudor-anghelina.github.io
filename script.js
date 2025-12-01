@@ -4,16 +4,197 @@ document.addEventListener("DOMContentLoaded", () => {
   const navLinks = document.querySelectorAll(".nav-links a");
   const contactForm = document.getElementById("contactForm");
   const siteHeader = document.querySelector(".site-header");
-  const heroBg1 = document.querySelector(".hero-bg-1");
-  const heroBg2 = document.querySelector(".hero-bg-2");
-  const heroImages = [
-    "https://distrokid.imgix.net/http%3A%2F%2Fgather.fandalism.com%2F555699--F224D231-EC64-498B-8402AFCFEA1A82E7--1618073139418--Burn.png?fm=jpg&q=75&w=800&s=822e4e0c3979c775978b6b8de00194e9",
-    "https://distrokid.imgix.net/http%3A%2F%2Fgather.fandalism.com%2F555699--E4B8858A-8013-4B24-9D3C41B351573D38--1594626150467--tudoranghelinapianolullabies.jpg?fm=jpg&q=75&w=800&s=8f3a80d46378fb4578f976798d3cde9b",
-    "https://distrokid.imgix.net/http%3A%2F%2Fgather.fandalism.com%2F555699--BBEBF5FE-92EE-47FE-83E4DD7E764ED7BB--1579469033701--TudorAnghelina6.png?fm=jpg&q=75&w=800&s=dd9c61e3014ddb47041055974a7fa557",
-    "https://distrokid.imgix.net/http%3A%2F%2Fgather.fandalism.com%2F555699--38A2CEC1-528F-47E3-806ACD15D2A5CD92--1575044305380--Design1.png?fm=jpg&q=75&w=800&s=c0dc2ec3ad0d5d56d7892e3e806ba628"
-  ];
-  let heroIndex = 0;
-  let showingFirstBg = true;
+  const heroBg = document.querySelector(".hero-bg");
+  const soundWavesContainer = document.querySelector(".sound-waves");
+  const currentYearElement = document.getElementById("current-year");
+  
+  // Generate Sound Waves
+  function generateSoundWaves() {
+    if (!soundWavesContainer) return;
+    
+    soundWavesContainer.innerHTML = ''; // Clear existing
+    
+    const numberOfBars = Math.floor(window.innerWidth / 12);
+    const colorPalette = [
+      'rgba(201, 168, 106, 0.7)', // Primary gold
+      'rgba(138, 98, 64, 0.6)',   // Brown
+      'rgba(241, 221, 170, 0.5)', // Light gold
+      'rgba(44, 24, 16, 0.6)',    // Dark brown
+      'rgba(255, 255, 255, 0.3)'  // White
+    ];
+    
+    for (let i = 0; i < numberOfBars; i++) {
+      const bar = document.createElement('div');
+      bar.className = 'wave-bar';
+      
+      // Random properties for natural look
+      const height = 80 + Math.random() * 80;
+      const delay = Math.random() * 2;
+      const duration = 1.5 + Math.random() * 1.5;
+      const colorIndex = Math.floor(Math.random() * colorPalette.length);
+      
+      bar.style.cssText = `
+        --wave-color: ${colorPalette[colorIndex]};
+        height: ${height}px;
+        animation-delay: ${delay}s;
+        animation-duration: ${duration}s;
+        opacity: ${0.2 + Math.random() * 0.3};
+      `;
+      
+      soundWavesContainer.appendChild(bar);
+    }
+  }
+  
+  // Extract colors from hero image
+  async function extractColorsFromImage() {
+    if (!heroBg) return;
+    
+    const imageUrl = heroBg.style.backgroundImage.replace(/url\(['"]?(.*?)['"]?\)/, '$1');
+    if (!imageUrl || imageUrl === 'none') return;
+    
+    try {
+      const colors = await getImageColors(imageUrl);
+      applyColorTheme(colors);
+    } catch (error) {
+      console.log('Using default colors:', error);
+      applyDefaultColors();
+    }
+  }
+  
+  function getImageColors(imageUrl) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = imageUrl;
+      
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 100; // Smaller for performance
+        canvas.height = Math.floor((img.height / img.width) * 100);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const pixels = imageData.data;
+        
+        // Get average color
+        let r = 0, g = 0, b = 0, count = 0;
+        
+        for (let i = 0; i < pixels.length; i += 4) {
+          r += pixels[i];
+          g += pixels[i + 1];
+          b += pixels[i + 2];
+          count++;
+        }
+        
+        const avgColor = {
+          r: Math.round(r / count),
+          g: Math.round(g / count),
+          b: Math.round(b / count)
+        };
+        
+        // Convert to HSL for hue rotation
+        const hsl = rgbToHSL(avgColor.r, avgColor.g, avgColor.b);
+        
+        resolve({
+          dominant: avgColor,
+          hue: hsl.h,
+          palette: generateColorPalette(hsl)
+        });
+      };
+      
+      img.onerror = reject;
+    });
+  }
+  
+  function rgbToHSL(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+
+    if (max === min) {
+      h = s = 0;
+    } else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+    }
+
+    return { 
+      h: Math.round(h * 360), 
+      s: Math.round(s * 100), 
+      l: Math.round(l * 100) 
+    };
+  }
+  
+  function generateColorPalette(hsl) {
+    const palette = [];
+    const hue = hsl.h;
+    
+    // Generate complementary colors
+    palette.push(`hsl(${hue}, 30%, 10%)`);    // Dark
+    palette.push(`hsl(${hue}, 40%, 25%)`);    // Medium dark
+    palette.push(`hsl(${hue}, 50%, 40%)`);    // Medium
+    palette.push(`hsl(${(hue + 30) % 360}, 40%, 60%)`); // Complementary light
+    palette.push(`hsl(${(hue + 60) % 360}, 30%, 75%)`); // Accent
+    
+    return palette;
+  }
+  
+  function applyColorTheme(colors) {
+    const root = document.documentElement;
+    
+    root.style.setProperty('--dominant-hue', colors.hue);
+    
+    // Apply colors to wave bars
+    document.querySelectorAll('.wave-bar').forEach((bar, index) => {
+      const colorIndex = index % colors.palette.length;
+      bar.style.setProperty('--wave-color', colors.palette[colorIndex]);
+    });
+  }
+  
+  function applyDefaultColors() {
+    const root = document.documentElement;
+    root.style.setProperty('--dominant-hue', '30'); // Default gold hue
+  }
+  
+  // Hero Background Loader
+  function loadHeroBackground() {
+    if (!heroBg) return;
+    
+    // Add loaded class to trigger animations
+    setTimeout(() => {
+      heroBg.classList.add('is-visible');
+      
+      // Extract colors from image
+      extractColorsFromImage();
+    }, 100);
+  }
+  
+  // Interactive Wave Animation
+  function addWaveInteractivity() {
+    let mouseX = 0;
+    let mouseY = 0;
+    
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX / window.innerWidth;
+      mouseY = e.clientY / window.innerHeight;
+      
+      // Update wave animation based on mouse position
+      document.querySelectorAll('.wave-bar').forEach((bar, index) => {
+        const distance = Math.abs((index / document.querySelectorAll('.wave-bar').length) - mouseX);
+        const intensity = 1 - Math.min(distance * 2, 0.8);
+        
+        bar.style.animationDuration = `${1.5 + intensity * 1.5}s`;
+        bar.style.opacity = `${0.2 + intensity * 0.3}`;
+      });
+    });
+  }
   
   // Mobile Navigation Toggle
   if (navToggle) {
@@ -34,7 +215,9 @@ document.addEventListener("DOMContentLoaded", () => {
   navLinks.forEach((link) => {
     link.addEventListener("click", () => {
       document.body.classList.remove("nav-open");
-      navToggle.setAttribute("aria-expanded", "false");
+      if (navToggle) {
+        navToggle.setAttribute("aria-expanded", "false");
+      }
       document.body.style.overflow = "";
     });
   });
@@ -42,8 +225,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // Smooth Scrolling for anchor links
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
+      const href = this.getAttribute('href');
+      if (href === '#') return;
+      
       e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
+      const target = document.querySelector(href);
       if (target) {
         target.scrollIntoView({
           behavior: 'smooth',
@@ -61,33 +247,6 @@ document.addEventListener("DOMContentLoaded", () => {
       siteHeader.classList.remove("scrolled");
     }
   });
-
-  // Hero background slideshow with crossfade + blur
-  if (heroBg1 && heroBg2 && heroImages.length) {
-    const setBg = (el, url) => {
-      el.style.backgroundImage = `url('${url}')`;
-    };
-
-    setBg(heroBg1, heroImages[heroIndex]);
-    heroBg1.classList.add("is-visible");
-
-    const rotateHeroBg = () => {
-      const nextIndex = (heroIndex + 1) % heroImages.length;
-      const incoming = showingFirstBg ? heroBg2 : heroBg1;
-      const outgoing = showingFirstBg ? heroBg1 : heroBg2;
-
-      setBg(incoming, heroImages[nextIndex]);
-      incoming.classList.add("is-visible");
-      outgoing.classList.remove("is-visible");
-
-      showingFirstBg = !showingFirstBg;
-      heroIndex = nextIndex;
-    };
-
-    // Prime the second layer then begin rotation
-    setTimeout(() => rotateHeroBg(), 400);
-    setInterval(rotateHeroBg, 9000);
-  }
   
   // Contact Form Submission
   if (contactForm) {
@@ -131,7 +290,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   
-  // Add subtle animation to music cards on scroll
+  // Add animation to music cards on scroll
   const observerOptions = {
     threshold: 0.1,
     rootMargin: "0px 0px -50px 0px"
@@ -154,10 +313,9 @@ document.addEventListener("DOMContentLoaded", () => {
     observer.observe(card);
   });
   
-  // Current year in footer
-  const yearSpan = document.querySelector(".footer-copyright p");
-  if (yearSpan) {
-    yearSpan.innerHTML = yearSpan.innerHTML.replace("2025", new Date().getFullYear());
+  // Update current year in footer
+  if (currentYearElement) {
+    currentYearElement.textContent = new Date().getFullYear();
   }
   
   // Add keyboard navigation for accessibility
@@ -165,19 +323,43 @@ document.addEventListener("DOMContentLoaded", () => {
     // Close menu on Escape key
     if (e.key === "Escape" && document.body.classList.contains("nav-open")) {
       document.body.classList.remove("nav-open");
-      navToggle.setAttribute("aria-expanded", "false");
+      if (navToggle) {
+        navToggle.setAttribute("aria-expanded", "false");
+        navToggle.focus();
+      }
       document.body.style.overflow = "";
-      navToggle.focus();
     }
-    
-    // Navigate menu with arrow keys when open
-    if (e.key === "ArrowDown" && document.body.classList.contains("nav-open")) {
-      e.preventDefault();
-      const firstLink = document.querySelector(".nav-links a");
-      if (firstLink) firstLink.focus();
-    }
+  });
+  
+  // Window resize handler
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      generateSoundWaves();
+    }, 250);
   });
   
   // Initialize
   console.log("Tudor Anghelina website loaded successfully");
+  
+  // Initial setup
+  generateSoundWaves();
+  loadHeroBackground();
+  addWaveInteractivity();
+  
+  // Add subtle background music wave animation on scroll
+  let lastScrollY = window.scrollY;
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    const scrollDelta = scrollY - lastScrollY;
+    
+    // Update wave animation based on scroll speed
+    const intensity = Math.min(Math.abs(scrollDelta) / 10, 2);
+    document.querySelectorAll('.wave-bar').forEach(bar => {
+      bar.style.animationDuration = `${2 / (1 + intensity)}s`;
+    });
+    
+    lastScrollY = scrollY;
+  });
 });
