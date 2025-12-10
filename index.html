@@ -31,6 +31,11 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
+
+  <!-- Cache/version identifier -->
+  <script>
+    window.__ASSET_VERSION = '2024-12-05-01';
+  </script>
   
   <!-- Favicon (will be cache-busted at runtime) -->
   <link rel="icon" data-href="img/favicon.ico" sizes="any">
@@ -46,7 +51,7 @@
   <script>
     (function(){
       try {
-        const v = Date.now();
+        const v = window.__ASSET_VERSION || Date.now();
 
         // Immediately set critical assets (CSS & manifest) so they load fast
         document.querySelectorAll('[data-href]').forEach(el => {
@@ -119,11 +124,61 @@
   
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Animate.css for reveal effects -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
 </head>
 
 <body>
+  <div class="preloader" aria-label="Loading site">
+    <div class="preloader-glow"></div>
+    <div class="preloader-orb">
+      <div class="preloader-glyph">
+        <img src="img/aristopathsLogo.png" alt="Aristopaths logo" width="38" height="38">
+      </div>
+      <div class="preloader-ring"></div>
+    </div>
+    <div class="preloader-bar">
+      <span></span>
+    </div>
+  </div>
+  <script>
+    // Inline safety net: ensure preloader hides even if external scripts fail or cache sticks
+    (function(){
+      var start = performance.now();
+      var killed = false;
+      function killPreloader() {
+        if (killed) return;
+        var elapsed = performance.now() - start;
+        var wait = Math.max(0, 1000 - elapsed);
+        setTimeout(function(){
+          if (killed) return;
+          killed = true;
+          var p = document.querySelector('.preloader');
+          if (p) {
+            p.classList.add('is-hidden');
+            setTimeout(function(){
+              p.classList.add('gone');
+              if (p.parentNode) p.parentNode.removeChild(p);
+            }, 900);
+          }
+          document.body.classList.remove('is-preloading');
+          document.body.classList.add('page-loaded');
+          setTimeout(function(){
+            document.body.classList.remove('content-hidden');
+          }, 700);
+        }, wait);
+      }
+      window.addEventListener('load', function(){ setTimeout(killPreloader, 80); });
+      document.addEventListener('DOMContentLoaded', function(){ setTimeout(killPreloader, 1200); });
+      setTimeout(killPreloader, 4000);
+    })();
+  </script>
+
   <!-- Navigation -->
-  <header class="site-header">
+  <header class="site-header animate__animated">
     <div class="nav-wrap">
       <a class="brand" href="#home" aria-label="Tudor Anghelina home">
         <img data-src="img/aristopathsLogo.png" alt="Aristopaths logo" width="36" height="36">
@@ -411,7 +466,7 @@
           rh = setTimeout(setHeaderHeightVar, 120);
         });
 
-        var v = Date.now();
+        const v = window.__ASSET_VERSION || Date.now();
         var s = document.createElement('script');
         s.src = 'script.js?v=' + v;
         s.defer = true;

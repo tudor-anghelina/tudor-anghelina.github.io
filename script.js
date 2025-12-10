@@ -7,6 +7,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const heroBg = document.querySelector(".hero-bg");
   const soundWavesContainer = document.querySelector(".sound-waves");
   const currentYearElement = document.getElementById("current-year");
+  const preloader = document.querySelector(".preloader");
+  const revealOrder = [];
+  const stageSequence = [];
+  let headerEl = null;
+  let preloaderCleared = false;
+  const revealAnimations = [
+    'animate__fadeInDown',
+    'animate__fadeInUp',
+    'animate__fadeInLeft',
+    'animate__fadeInRight',
+    'animate__zoomIn',
+    'animate__lightSpeedInLeft',
+    'animate__lightSpeedInRight',
+    'animate__fadeIn'
+  ];
   
   // Generate Sound Waves
   function generateSoundWaves() {
@@ -174,6 +189,117 @@ document.addEventListener("DOMContentLoaded", () => {
       // Extract colors from image
       extractColorsFromImage();
     }, 100);
+  }
+
+  function setRevealTargets() {
+    headerEl = document.querySelector('header.site-header');
+    if (headerEl) {
+      headerEl.classList.add('staged-hide');
+    }
+
+    const selectors = [
+      '.brand',
+      '.nav-links a',
+      '.hero .title',
+      '.hero .subtitle',
+      '.hero .hero-tagline',
+      '.hero .hero-scroll',
+      '#about .section-title',
+      '.about-content',
+      '#music .section-title',
+      '.music-grid',
+      '#contact .section-title',
+      '.contact-container',
+      '.social-links'
+    ];
+
+    selectors.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => {
+        el.classList.add('will-reveal');
+        revealOrder.push(el);
+      });
+    });
+
+    document.querySelectorAll('section, footer').forEach(el => {
+      el.classList.add('staged-hide');
+      stageSequence.push(el);
+    });
+  }
+
+  function playStageSequence() {
+    stageSequence.forEach((el, idx) => {
+      const effect = revealAnimations[Math.floor(Math.random() * revealAnimations.length)];
+      setTimeout(() => {
+        el.classList.remove('staged-hide');
+        el.style.removeProperty('display');
+        void el.offsetHeight; // force reflow
+        el.classList.add('animate__animated', effect, 'animate__fast');
+      }, idx * 500);
+    });
+  }
+
+  function revealHeader() {
+    if (!headerEl) {
+      headerEl = document.querySelector('header.site-header');
+    }
+    if (!headerEl) return;
+    const navWrap = headerEl.querySelector('.nav-wrap');
+    headerEl.classList.remove('staged-hide');
+    headerEl.removeAttribute('style');
+    headerEl.style.display = 'block';
+    const effect = 'animate__fadeInUpBig';
+    void headerEl.offsetHeight; // reflow
+    headerEl.classList.add('animate__animated', effect, 'animate__fast', 'revealed');
+
+    if (navWrap) {
+      navWrap.classList.remove('staged-hide');
+      navWrap.removeAttribute('style');
+      navWrap.style.display = 'flex';
+      void navWrap.offsetHeight;
+      navWrap.classList.add('animate__animated', effect, 'animate__fast', 'revealed');
+    }
+  }
+  }
+
+  function playReveal() {
+    const navWrap = document.querySelector('.site-header .nav-wrap');
+    if (navWrap) {
+      const randomAnim = revealAnimations[Math.floor(Math.random() * revealAnimations.length)];
+      setTimeout(() => {
+        navWrap.classList.add('animate__animated', randomAnim, 'animate__faster');
+        navWrap.classList.add('revealed');
+      }, 1100);
+    }
+
+    revealOrder.forEach((el, idx) => {
+      const effect = revealAnimations[idx % revealAnimations.length];
+      setTimeout(() => {
+        el.classList.add('revealed');
+        el.classList.add('animate__animated', effect, 'animate__faster');
+      }, 240 + idx * 80);
+    });
+  }
+
+  function clearPreloader() {
+    if (preloaderCleared) return;
+    preloaderCleared = true;
+    document.body.classList.remove('is-preloading');
+    document.body.classList.add('page-loaded');
+    setTimeout(() => {
+      revealHeader();
+      setTimeout(playStageSequence, 500);
+      setTimeout(playReveal, 500);
+      setTimeout(() => {
+        document.body.classList.remove('content-hidden');
+      }, 700);
+    }, 500);
+    if (preloader) {
+      preloader.classList.add('is-hidden');
+      setTimeout(() => {
+        preloader.classList.add('gone');
+        if (preloader.parentNode) preloader.remove();
+      }, 900);
+    }
   }
   
   // Interactive Wave Animation
@@ -344,9 +470,44 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("Tudor Anghelina website loaded successfully");
   
   // Initial setup
+  document.body.classList.add('is-preloading');
+  document.body.classList.add('content-hidden');
+  setRevealTargets();
   generateSoundWaves();
   loadHeroBackground();
   addWaveInteractivity();
+  const schedulePreloaderClear = () => setTimeout(clearPreloader, 50);
+  window.addEventListener('load', schedulePreloaderClear);
+  if (document.readyState === 'complete') {
+    schedulePreloaderClear();
+  }
+  const pollClear = setInterval(() => {
+    if (preloaderCleared) {
+      clearInterval(pollClear);
+      return;
+    }
+    if (document.readyState === 'complete') {
+      clearPreloader();
+      clearInterval(pollClear);
+    }
+  }, 300);
+  // Fallbacks in case load is delayed or errors happen
+  setTimeout(clearPreloader, 2000);
+  setTimeout(clearPreloader, 3500);
+  setTimeout(clearPreloader, 6000);
+  document.addEventListener('readystatechange', () => {
+    if (document.readyState === 'interactive') {
+      setTimeout(clearPreloader, 800);
+    }
+  });
+  window.addEventListener('error', () => {
+    setTimeout(clearPreloader, 300);
+  });
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(clearPreloader, 800);
+  });
+  // Final hard stop
+  setTimeout(clearPreloader, 3000);
   
   // Add subtle background music wave animation on scroll
   let lastScrollY = window.scrollY;
