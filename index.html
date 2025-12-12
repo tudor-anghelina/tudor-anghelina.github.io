@@ -5,126 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tudor Anghelina | Musician & Sound Explorer</title>
   
-  <!-- Meta Tags -->
   <meta name="description" content="Tudor Anghelina - Minimalist musician blending emotion, storytelling, and sound experimentation into unique sonic experiences.">
   <meta name="keywords" content="music, musician, sound, minimalist, electronic, Tudor Anghelina, aristopaths">
   <meta name="author" content="Tudor Anghelina">
   
-  <!-- Open Graph -->
   <meta property="og:title" content="Tudor Anghelina | Musician & Sound Explorer">
   <meta property="og:description" content="Minimal. Clean. Real.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="img/android-chrome-512x512.png">
   <meta property="og:url" content="https://tudoranghelina.com">
   
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Tudor Anghelina">
   <meta name="twitter:description" content="Minimalist musician and sound explorer">
   
-  <!-- Theme & Icons -->
   <meta name="theme-color" content="#111111">
   <meta name="application-name" content="Tudor Anghelina">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Tudor Anghelina">
-  <!-- Prevent aggressive HTML caching where possible -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
 
-  <!-- Cache/version identifier -->
-  <script>
-    window.__ASSET_VERSION = '2024-12-05-01';
-  </script>
+  <link rel="preload" href="img/aristopathsLogo.png" as="image">
   
-  <!-- Favicon (will be cache-busted at runtime) -->
-  <link rel="icon" data-href="img/favicon.ico" sizes="any">
-  <link rel="icon" type="image/png" sizes="32x32" data-href="img/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" data-href="img/favicon-16x16.png">
-  <link rel="apple-touch-icon" sizes="180x180" data-href="img/apple-touch-icon.png">
-  <link id="site-manifest" rel="manifest" data-href="site.webmanifest">
+  <link rel="icon" href="img/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
   
-  <!-- Styles (cache-busted at runtime) -->
-  <link id="main-css" rel="stylesheet" data-href="styles.css">
+  <link rel="stylesheet" href="styles.css">
 
-  <!-- Cache-busting loader: sets href/src with a version query param to force reloads -->
-  <script>
-    (function(){
-      try {
-        const v = window.__ASSET_VERSION || Date.now();
-
-        // Immediately set critical assets (CSS & manifest) so they load fast
-        document.querySelectorAll('[data-href]').forEach(el => {
-          try {
-            const base = el.dataset.href;
-            if (!base) return;
-            // Only set href for elements that are in the head (css/manifest/icons)
-            // We'll also set the rest on DOMContentLoaded to ensure body elements exist
-            if (el.parentElement && el.parentElement.tagName === 'HEAD') {
-              el.href = base + '?v=' + v;
-            }
-          } catch (e) {}
-        });
-
-        // After DOM content loads, set remaining assets (images, icons in body, bg images)
-        function applyLateBust() {
-          try {
-            // data-href for any remaining links (icons in head/body)
-            document.querySelectorAll('[data-href]').forEach(el => {
-              try {
-                const base = el.dataset.href;
-                if (!base) return;
-                el.href = base + '?v=' + v;
-              } catch (e) {}
-            });
-
-            // data-src -> set src for images
-            document.querySelectorAll('[data-src]').forEach(el => {
-              try {
-                const base = el.dataset.src;
-                if (!base) return;
-                el.src = base + '?v=' + v;
-              } catch (e) {}
-            });
-
-            // Update meta og:image if it points to a local asset
-            const ogImage = document.querySelector('meta[property="og:image"]');
-            if (ogImage && ogImage.content && (ogImage.content.indexOf('img/') === 0 || ogImage.content.indexOf('/img/') === 0)) {
-              ogImage.content = ogImage.content + '?v=' + v;
-            }
-
-            // data-bg -> background images
-            document.querySelectorAll('[data-bg]').forEach(el => {
-              try {
-                const base = el.dataset.bg;
-                if (!base) return;
-                el.style.backgroundImage = `url('${base}?v=${v}')`;
-              } catch (e) {}
-            });
-
-          } catch (e) {
-            console.error('Late cache-bust error', e);
-          }
-        }
-
-        if (document.readyState === 'complete' || document.readyState === 'interactive') {
-          setTimeout(applyLateBust, 0);
-        } else {
-          document.addEventListener('DOMContentLoaded', applyLateBust);
-        }
-
-      } catch (e) {
-        console.error('Cache-bust loader error', e);
-      }
-    })();
-  </script>
-  
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
   
-  <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Animate.css for reveal effects -->
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
@@ -145,14 +60,14 @@
     </div>
   </div>
   <script>
-    // Inline safety net: ensure preloader hides even if external scripts fail or cache sticks
+    // Inline safety net (slightly shortened and simplified)
     (function(){
       var start = performance.now();
       var killed = false;
       function killPreloader() {
         if (killed) return;
         var elapsed = performance.now() - start;
-        var wait = Math.max(0, 1000 - elapsed);
+        var wait = Math.max(0, 800 - elapsed);
         setTimeout(function(){
           if (killed) return;
           killed = true;
@@ -160,7 +75,6 @@
           if (p) {
             p.classList.add('is-hidden');
             setTimeout(function(){
-              p.classList.add('gone');
               if (p.parentNode) p.parentNode.removeChild(p);
             }, 900);
           }
@@ -171,17 +85,15 @@
           }, 700);
         }, wait);
       }
-      window.addEventListener('load', function(){ setTimeout(killPreloader, 80); });
-      document.addEventListener('DOMContentLoaded', function(){ setTimeout(killPreloader, 1200); });
-      setTimeout(killPreloader, 4000);
+      window.addEventListener('load', function(){ setTimeout(killPreloader, 50); });
+      setTimeout(killPreloader, 3000); // Final fallback timeout reduced
     })();
   </script>
 
-  <!-- Navigation -->
   <header class="site-header animate__animated">
     <div class="nav-wrap">
       <a class="brand" href="#home" aria-label="Tudor Anghelina home">
-        <img data-src="img/aristopathsLogo.png" alt="Aristopaths logo" width="36" height="36">
+        <img src="img/aristopathsLogo.png" alt="Aristopaths logo" width="36" height="36">
       </a>
 
       <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle menu">
@@ -199,35 +111,20 @@
     </div>
   </header>
 
-  <!-- Hero Section -->
   <section id="home" class="hero">
-    <!-- Sound Wave Visualization -->
-    <div class="sound-waves">
-      <!-- Generated by JavaScript -->
-    </div>
-    
-    <!-- Hero Background Image -->
-    <div class="hero-bg" style="background-image: url('https://yt3.googleusercontent.com/ytc/AIdro_nc7Rh0w5ZV0RlCiaELp8ZI2-xrlj6hCQtJIO9SvYy5KEYM=s900-c-k-c0x00ffffff-no-rj')"></div>
-    
-    <!-- Spectral Highlight Effect -->
-    <div class="spectral-highlight"></div>
-    
-    <!-- Hero Content -->
     <div class="hero-inner">
       <h1 class="title">TUDOR <span class="title-highlight">ANGHELINA</span></h1>
       <p class="subtitle">Minimal. Clean. Real.</p>
       <p class="hero-tagline">Musician • Sound Explorer • Creator</p>
     </div>
     
-    <!-- Scroll Indicator -->
     <div class="hero-scroll">
-      <a href="#about" class="scroll-down" aria-label="Scroll down">
+      <a href="#about" class="scroll-down" aria-label="Scroll down to About section">
         <i class="fas fa-chevron-down"></i>
       </a>
     </div>
   </section>
 
-  <!-- About Section -->
   <section id="about" class="section">
     <h2 class="section-title">About</h2>
     <div class="about-content">
@@ -253,7 +150,6 @@
     </div>
   </section>
 
-  <!-- Music Section -->
   <section id="music" class="section">
     <h2 class="section-title">Music</h2>
     <p class="section-subtitle">Latest Releases & Collaborations</p>
@@ -343,7 +239,6 @@
     </div>
   </section>
 
-  <!-- Contact Section -->
   <section id="contact" class="section">
     <h2 class="section-title">Contact</h2>
     <p class="section-subtitle">Let's create something meaningful together</p>
@@ -377,13 +272,13 @@
       
       <form class="contact-form" id="contactForm">
         <div class="form-group">
-          <input type="text" name="name" placeholder="Your Name" required>
+          <input type="text" name="name" placeholder="Your Name" required aria-label="Your Name">
         </div>
         <div class="form-group">
-          <input type="email" name="email" placeholder="Your Email" required>
+          <input type="email" name="email" placeholder="Your Email" required aria-label="Your Email">
         </div>
         <div class="form-group">
-          <select name="subject" required>
+          <select name="subject" required aria-label="Select Subject">
             <option value="" disabled selected>Select Subject</option>
             <option value="collaboration">Collaboration</option>
             <option value="booking">Booking</option>
@@ -392,15 +287,15 @@
           </select>
         </div>
         <div class="form-group">
-          <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+          <textarea name="message" placeholder="Your Message" rows="5" required aria-label="Your Message"></textarea>
         </div>
         <button type="submit" class="submit-btn">
           <i class="fas fa-paper-plane"></i> Send Message
         </button>
+        <p class="form-message" aria-live="polite" style="margin-top: 10px; text-align: center; display: none;"></p>
       </form>
     </div>
     
-    <!-- Social Links -->
     <div class="social-links">
       <a href="https://instagram.com/yourprofile" aria-label="Instagram" class="social-link" target="_blank" rel="noopener">
         <i class="fab fa-instagram"></i>
@@ -423,11 +318,10 @@
     </div>
   </section>
 
-  <!-- Footer -->
   <footer class="footer">
     <div class="footer-content">
       <div class="footer-brand">
-        <img data-src="img/aristopathsLogo.png" alt="Aristopaths logo" width="40" height="40">
+        <img src="img/aristopathsLogo.png" alt="Aristopaths logo" width="40" height="40">
         <span>Tudor Anghelina</span>
       </div>
       
@@ -466,9 +360,9 @@
           rh = setTimeout(setHeaderHeightVar, 120);
         });
 
-        const v = window.__ASSET_VERSION || Date.now();
+        // Load main script with defer
         var s = document.createElement('script');
-        s.src = 'script.js?v=' + v;
+        s.src = 'script.js';
         s.defer = true;
         document.body.appendChild(s);
       } catch (e) {
