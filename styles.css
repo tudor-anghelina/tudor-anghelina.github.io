@@ -625,7 +625,7 @@ img {
   background: var(--gold-line);
   background-size: 200% 100%;
   animation: gradientShift 7s ease-in-out infinite alternate;
-  border-radius: var(--line-radius);
+  border-radius: 100%
 }
 
 .title-highlight {
